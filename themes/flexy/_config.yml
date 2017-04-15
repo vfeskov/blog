@@ -1,0 +1,10 @@
+# config
+logo: /images/vf.png
+keywords: "vladimir, feskov"
+
+# Content
+excerpt_link: Read more
+
+# Miscellaneous
+rss: /atom.xml
+google_analytics:

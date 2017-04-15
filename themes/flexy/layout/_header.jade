@@ -1,0 +1,14 @@
+if theme.logo
+  a(href= config.root)
+    img(src= theme.logo, alt= config.title, title= config.title)
+h1
+  a(href= config.root, alt= config.title, title= config.title, itemprop='headline')= config.title
+p(itemprop='description')!= config.description
+nav(itemscope, itemtype='https://schema.org/SiteNavigationElement')
+  ul
+    li(itemprop='name')
+      a(href='/', title='Home', itemprop='url')= 'Home'
+    li(itemprop='name')
+      a(href='/articles.html', title='About', itemprop='url')= 'Articles'
+    li(itemprop='name')
+      a(href='https://bob.vfeskov.com', title='War of Bob', itemprop='url', target='_blank')= 'War of Bob'
