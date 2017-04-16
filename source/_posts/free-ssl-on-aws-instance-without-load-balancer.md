@@ -15,15 +15,16 @@ If all you need from a load balancer is an SSL certificate, you can save minimum
 
 ### Dockerize your app and publish
 
-For this particular method to work you will need to [dockerize](https://docs.docker.com/engine/examples/) your application and publish the image to either private or public Docker repository.
+For this particular method to work you will need to [dockerize](https://docs.docker.com/engine/examples/) your application. Make sure you expose a single port in your Dockerfile by adding, for example, `EXPOSE 3000` line at the end.
 
-If you choose a public repo, make sure you don't push your secrets with the image. A good way to avoid it, and this method actually requires it, is to use environment variables to configure your app.
+After this, build and push the image to either private or public Docker repository. If you choose a public repo, make sure you don't push your secrets with the image. A good way to avoid it, and this method actually requires it, is to use environment variables to configure your app.
+
 
 ### Create Dockerrun.aws.json
 
 Replace `<<<<<<<<<something something>>>>>>>>>` with actual values, save it as `Dockerrun.aws.json` and compress it.
 
->If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
+> If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
 
 ``` json
 {
