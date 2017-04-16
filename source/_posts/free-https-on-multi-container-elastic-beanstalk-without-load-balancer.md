@@ -1,28 +1,27 @@
 ---
-title: Free SSL on AWS Instance without Load Balancer
+title: Free HTTPS on AWS Elastic Beanstalk without Load Balancer
 date: 2017-04-15 22:19:07
-tags: AWS, Elastic Load Balancing, SSL Certificate, LetsEncrypt, nginx
+tags: AWS, Elastic, Beanstalk, Load Balancing, SSL, TLS, certificate, LetsEncrypt, nginx, Multi-container, Docker, free
 intro: AWS offers free SSL certificates but they are to be used only on a load balancer or a CloudFront distribution. The latter is a CDN solution for static websites and cannot be used to host a backend app.
 ---
 
 AWS offers free SSL certificates but they are to be used [only](https://aws.amazon.com/certificate-manager/) on a load balancer or a CloudFront distribution. The latter is a CDN solution for static websites and cannot be used to host a backend app.
 
-A load balancer has some really good [perks](https://aws.amazon.com/elasticloadbalancing/) besides splitting traffic between multiple instances of your webapp. For example, it lets you monitor number of requests in a convenient way, which you can't do as easily on an EC2 instance.
+A load balancer offers some really good [perks](https://aws.amazon.com/elasticloadbalancing/) besides splitting traffic. For example, it lets you monitor number of requests in a convenient way, which you can't do as easily on an EC2 instance.
 
-If all you need from a load balancer is an SSL certificate, you can save minimum [$18 per month](https://aws.amazon.com/elasticloadbalancing/classicloadbalancer/pricing/) by following the steps below.
+But if all you need from a load balancer is an SSL certificate, you can save minimum [$18 per month](https://aws.amazon.com/elasticloadbalancing/classicloadbalancer/pricing/) by following the steps below.
 
 > You can find a working example [here](https://github.com/vfeskov/war-of-bob).
 
-### Dockerize your app and publish
+### Dockerize your app and push
 
-For this particular method to work you will need to [dockerize](https://docs.docker.com/engine/examples/) your application. Make sure you expose a single port in your Dockerfile by adding, for example, `EXPOSE 3000` line at the end.
+For this particular method to work you will need to [dockerize](https://docs.docker.com/engine/examples/) your application. Make sure you expose a single port in your Dockerfile by adding, for example, `EXPOSE 3000` line at the end. If you expose multiple ports then nginx will default to port `80`.
 
-After this, build and push the image to either private or public Docker repository. If you choose a public repo, make sure you don't push your secrets with the image. A good way to avoid it, and this method actually requires it, is to use environment variables to configure your app.
-
+Build and push the image to either private or public Docker repository. If you choose a public repo, make sure you don't push your secrets with the image. A good way to avoid it, and this method actually requires it, is to use environment variables to store secrets.
 
 ### Create Dockerrun.aws.json
 
-Replace `<<<<<<<<<something something>>>>>>>>>` with actual values, save it as `Dockerrun.aws.json` and compress it.
+Replace `<<<<<<<<<something something>>>>>>>>>` with actual values in the following code snippet, save it as `Dockerrun.aws.json` and compress it.
 
 > If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
 
@@ -141,7 +140,7 @@ Replace `<<<<<<<<<something something>>>>>>>>>` with actual values, save it as `
 }
 ```
 
-You should end up with `Dockerrun.aws.json.zip` or some other `*.zip` archive file.
+You should end up with a `*.zip` file with `Dockerrun.aws.json` inside.
 
 ### Create Elastic Beanstalk app and environment
 
@@ -179,11 +178,17 @@ If you're using another DNS provider, you should create an A record there and po
 
 ### Go to the (sub)domain of your app
 
-The first time you access it from the correct URL, a new [LetsEncrypt](https://letsencrypt.org/) certificate will be generated. It will be auto-renewed too. If enough time has passed since the environment creation, your app should be up and running.
+The first time you access, a new [LetsEncrypt](https://letsencrypt.org/) certificate will be generated. If enough time has passed since the environment creation, your app should be up and running.
+
+### Important to know
+
+LetsEncrypt has [rate limits](https://letsencrypt.org/docs/rate-limits/) which you might bump up against if you recreate instance too much. You don't have to worry about limits if you're just deploying new versions of your application.
+
+The certificate is renewed automatically by the [docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion#automatic-certificate-renewal) container.
 
 ### Conclusion
 
-If you don't need a loadbalancer for anything but SSL, you can use a Multi-container Docker EB environment to easily setup SSL on your single instance.
+If you don't need a loadbalancer for anything but HTTPS, you can use a Multi-container Docker EB environment to set it up on a single instance.
 
 ### Credits
 
