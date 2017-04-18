@@ -2,7 +2,7 @@
 title: Free HTTPS on AWS Elastic Beanstalk without Load Balancer
 date: 2017-04-15 22:19:07
 tags: AWS, Elastic, Beanstalk, Load Balancing, SSL, TLS, certificate, LetsEncrypt, nginx, Multi-container, Docker, free
-intro: AWS offers free SSL certificates but they are to be used only on a load balancer or a CloudFront distribution. The latter is a CDN solution for static websites and cannot be used to host a backend app.
+intro: Setup free LetsEncrypt SSL/TLS certificate with just a Dockerrun.aws.json file on a single EC2 instance Multi-container Docker Elastic Beanstalk environment without a load balancer. Bundled with HTTP to HTTPS redirect out of the box.
 ---
 
 AWS offers free SSL certificates but they are to be used [only](https://aws.amazon.com/certificate-manager/) on a load balancer or a CloudFront distribution. The latter is a CDN solution for static websites and cannot be used to host a backend app.
@@ -182,7 +182,7 @@ The first time you access, a new [LetsEncrypt](https://letsencrypt.org/) certifi
 
 ### Important to know
 
-LetsEncrypt has [rate limits](https://letsencrypt.org/docs/rate-limits/) which you might bump up against if you recreate instance too much. You don't have to worry about limits if you're just deploying new versions of your application.
+LetsEncrypt has [rate limits](https://letsencrypt.org/docs/rate-limits/) which you might bump up against if you recreate instance too many times. You don't have to worry about limits if you're just deploying new versions of your application.
 
 The certificate is renewed automatically by the [docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion#automatic-certificate-renewal) container.
 
