@@ -14,7 +14,7 @@ if is_home()
   footer(itemscope, itemtype='https://schema.org/WPFooter')
     include _footer
 //- articles page
-if is_page() && page.title.toLowerCase() == 'articles'
+if is_page() && page.title.toLowerCase() == 'posts'
   article.full
     h1(itemprop='headline')= page.title
     != page.content
