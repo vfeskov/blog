@@ -14,7 +14,7 @@ tags:
   - CRA with SSR series
 ---
 
-I'm starting a series dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting SSR in the future.
+I'm starting a [series](https://vfeskov.com/tags/CRA-with-SSR-series/) dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting SSR in the future.
 
 <!-- more -->
 

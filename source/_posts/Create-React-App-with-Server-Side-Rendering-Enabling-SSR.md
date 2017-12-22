@@ -15,7 +15,7 @@ tags:
   - CRA with SSR series
 ---
 
-I'm going to enable SSR in the minimal project I built in the [previous part](https://vfeskov.com/2017/12/21/Create-React-App-with-Server-Side-Rendering-Setup/) of the series dedicated to React Server Side Rendering.
+I'm going to enable SSR in the minimal project I built in the [previous part](https://vfeskov.com/2017/12/21/Create-React-App-with-Server-Side-Rendering-Setup/) of the [series](https://vfeskov.com/tags/CRA-with-SSR-series/) dedicated to React Server Side Rendering.
 
 <!-- more -->
 
