@@ -1,7 +1,17 @@
 # Header
 menu:
-  Home: /
-  Archives: /archives
+  Home:
+    target:
+    href: /
+  Win A Beer:
+    target: _blank
+    href: https://beer.vfeskov.com
+  War Of Bob:
+    target: _blank
+    href: https://bob.vfeskov.com
+  Platformer:
+    target: _blank
+    href: https://plat.vfeskov.com
 rss: /atom.xml
 
 # Content
@@ -9,13 +19,8 @@ excerpt_link: Read More
 fancybox: true
 
 # Sidebar
-sidebar: right
+sidebar:
 widgets:
-- category
-- tag
-- tagcloud
-- archive
-- recent_posts
 
 # display widgets at the bottom of index pages (pagination == 2)
 index_widgets:
@@ -28,7 +33,8 @@ archive_type: 'monthly'
 show_count: false
 
 # Miscellaneous
-google_analytics:
+google_analytics: UA-39039659-3
+gauges_analytics:
 favicon: /favicon.png
 twitter:
 google_plus:

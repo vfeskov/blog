@@ -1,9 +1,14 @@
 ---
 title: Override/mock datetime in browser
 date: 2017-04-18 20:29:51
-intro: A short code snippet that lets override time in protractor or javascript unit-tests.
-tags: JavaScript, browser, Date, mock, stub, override
+tags:
+  - JS
+  - Testing
 ---
+
+A short code snippet that enables overriding time in protractor or javascript unit-tests.
+
+<!-- more -->
 
 For unit tests put it before the specs:
 

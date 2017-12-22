@@ -1,11 +1,21 @@
 ---
 title: 'Create React App with Server Side Rendering: Setup'
 date: 2017-12-21 22:32:01
-tags: CRA, create-react-app, SSR, Server Side Rendering, React, Redux, Thunk, NodeJS, Webpack, Babel
-intro: Start of a series dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting Server Side Rendering in the future
+tags:
+  - CRA
+  - SSR
+  - React
+  - Redux
+  - NodeJS
+  - Webpack
+  - Babel
+  - JS
+  - Docker
 ---
 
-This is **part 1** of series dedicated to React Server Side Rendering.
+Start of a series dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting SSR in the future.
+
+<!-- more -->
 
 Here I'm going to make separate client and server apps. The client will request posts asynchronously from the server using REST API and then render them.
 

@@ -1,9 +1,19 @@
 ---
 title: Free HTTPS on AWS Elastic Beanstalk without Load Balancer
 date: 2017-04-15 22:19:07
-tags: AWS, Elastic, Beanstalk, Load Balancing, SSL, TLS, certificate, LetsEncrypt, nginx, Multi-container, Docker, free
-intro: Setup free LetsEncrypt SSL/TLS certificate with just a Dockerrun.aws.json file on a single EC2 instance Multi-container Docker Elastic Beanstalk environment without a load balancer. Bundled with HTTP to HTTPS redirect out of the box.
+tags:
+  - AWS
+  - Elastic Beanstalk
+  - Load Balancing
+  - SSL
+  - LetsEncrypt
+  - nginx
+  - Docker
 ---
+
+Setup free HTTPS with a single config file on AWS Elastic Beanstalk environment without a load balancer. Bundled with HTTP to HTTPS redirect out of the box.
+
+<!-- more -->
 
 AWS offers free SSL certificates but they are to be used [only](https://aws.amazon.com/certificate-manager/) on a load balancer or a CloudFront distribution. The latter is a CDN solution for static websites and cannot be used to host a backend app.
 
@@ -13,7 +23,7 @@ But if all you need from a load balancer is an SSL certificate, you can save min
 
 > You can find a working example [here](https://github.com/vfeskov/war-of-bob).
 
-### Dockerize your app and push
+### Dockerize your app
 
 For this particular method to work you will need to [dockerize](https://docs.docker.com/engine/examples/) your application. Make sure you expose a single port in your Dockerfile by adding, for example, `EXPOSE 3000` line at the end. If you expose multiple ports then nginx will default to port `80`.
 
@@ -21,7 +31,7 @@ Build and push the image to either private or public Docker repository. If you c
 
 ### Create Dockerrun.aws.json
 
-Replace `<<<<<<<<<something something>>>>>>>>>` with actual values in the following code snippet, save it as `Dockerrun.aws.json` and compress it.
+Replace `<something something>` with actual values in the following code snippet, save it as `Dockerrun.aws.json` and compress it.
 
 > If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
 
@@ -192,5 +202,4 @@ If you don't need a loadbalancer for anything but HTTPS, you can use a Multi-con
 
 ### Credits
 
-All the heavy lifting was done here: [https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) and here: [https://github.com/jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy), kudos to them!
-
+Behind the config there are these Docker images used: [https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion) and [https://github.com/jwilder/nginx-proxy](https://github.com/jwilder/nginx-proxy), consider supporting them :)

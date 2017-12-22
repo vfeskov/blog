@@ -3,16 +3,25 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Vladimir Feskov
+title: The Curve
 subtitle:
-description: I'm a web developer and I like my job very much.
+description: Posts on web development by Vladimir Feskov
 author: Vladimir Feskov
-language:
-timezone:
+language: en
+timezone: Europe/Berlin
+
+feed:
+  type: atom
+  path: atom.xml
+  limit: 20
+  hub:
+  content:
+  content_limit: 140
+  content_limit_delim: ' '
 
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
-url: http://yoursite.com
+url: https://vfeskov.com
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -43,6 +52,15 @@ highlight:
   auto_detect: false
   tab_replace:
 
+# Home page setting
+# path: Root path for your blogs index page. (default = '')
+# per_page: Posts displayed per page. (0 = disable pagination)
+# order_by: Posts order. (Order by date descending by default)
+index_generator:
+  path: ''
+  per_page: 10
+  order_by: -date
+
 # Category & Tag
 default_category: uncategorized
 category_map:
@@ -63,7 +81,7 @@ pagination_dir: page
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: flexy
+theme: landscape
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
