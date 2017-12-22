@@ -11,13 +11,14 @@ tags:
   - Babel
   - JS
   - Docker
+  - CRA with SSR series
 ---
 
-Start of a series dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting SSR in the future.
+I'm starting a series dedicated to React Server Side Rendering. In this part I'm making minimal client and server apps with CRA, Redux and plain NodeJS, that are capable of supporting SSR in the future.
 
 <!-- more -->
 
-Here I'm going to make separate client and server apps. The client will request posts asynchronously from the server using REST API and then render them.
+I'm going to make separate client and server apps. The client will request posts asynchronously from the server using REST API and then render them.
 
 The project **will not** have SSR yet, but it will be based on best practices and cool patterns, so worth checking it out. Next post **with** SSR will be based on this too.
 
@@ -460,6 +461,5 @@ On http://localhost:3000 I see posts as expected.
 
 
 ----------
-Stay tuned for the next part where I actually enable server side rendering!
 
-If you can't wait, here's the source code for the next part: [Part 2: Enabling SSR](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr) , a post will shortly follow.
+In the [next part](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering-Enabling-SSR/) I will actually enable Service Side Rendering, [check it out](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering-Enabling-SSR/)
