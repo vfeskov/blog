@@ -31,7 +31,24 @@ Short recap:
 - `server` has a NodeJS app that serves `/api/posts` requests with db content
 - In production env `server` also serves `client`'s `build` folder as static files
 
-## Idea
+## Index
+
+- [Idea](#idea)
+- [Client](#client)
+  - [package.json](#client-package)
+  - [src/reducers/](#client-src-reducers)
+  - [src/App.js](#client-src-app)
+  - [src/index.js](#client-src-index)
+  - [src/renderServerSide.js](#client-src-renderserverside)
+- [Server](#server)
+  - [package.json](#server-package)
+  - [src/index.js](#server-src-index)
+  - [src/prodHandlers.js](#server-src-prodhandlers)
+  - [webpack.config.js](#server-webpack)
+- [Verifying that it all works](#verifying)
+- [Caching problem](#caching-problem)
+
+## <a id="idea"></a>Idea
 
 My app displays posts when `receivePosts()` action gets dispatched, which in turn happens when app receives posts from the server asynchronously.
 
@@ -41,9 +58,9 @@ I will also need to not fetch posts on the client if they were put in store on t
 
 My server will import client files, to smoothen development I will use [webpack define plugin](https://webpack.js.org/plugins/define-plugin/) to import them only in production.
 
-## Client
+## <a id="client"></a>Client
 
-### package.json
+### <a id="client-package"></a>package.json
 
 First I'm going to modify build script to not only move `build` folder to `server`, but also rename `index.html` to `layout.html`, because we will render `index.html` dynamically:
 ```json
@@ -54,7 +71,7 @@ First I'm going to modify build script to not only move `build` folder to `serve
 }
 ```
 
-### src/reducers/
+### <a id="client-src-reducers"></a>src/reducers/
 
 Next I'm going to add a reducer `inited`, which will produce boolean value: `false` by default and `true` when any kind of response is received for initial posts fetching.
 
@@ -85,7 +102,7 @@ export const root = combineReducers({
 ```
 When I dispatch posts server side, `inited` value in store will become `true` and the client will know not to fetch posts again.
 
-### src/App.js
+### <a id="client-src-app"></a>src/App.js
 
 Now I'm going to make my App check for `inited` flag before fetching posts:
 
@@ -108,9 +125,9 @@ export const App = connect(
   dispatch => bindActionCreators(actionCreators, dispatch)
 )(AppComponent)
 ```
-`componentDidMount` hook never gets called on server side (by `rednerToString`) making it perfect for such functionality.
+`componentDidMount` hook never gets called on server side (by `renderToString`) making it perfect for such functionality.
 
-### src/index.js
+### <a id="client-src-index"></a>src/index.js
 
 Next I'll read initial state of Redux store from a global variable, which the server will add to `index.html`.
 
@@ -128,7 +145,7 @@ const store = createStore(root, initState, applyMiddleware(thunkMiddleware))
 unregister()
 ```
 
-### src/renderServerSide.js
+### <a id="client-src-renderserverside"></a>src/renderServerSide.js
 
 Finally, I'm going to add `renderServerSide` function that will never be called by the client, but it will be imported by the server. The file will import Redux and other libs from the client, so it makes sense to put it here:
 
@@ -160,9 +177,9 @@ export function renderServerSide (posts) {
 ```
 `renderServerSide` accepts posts that the server will provide, and it will return `html` and `state` strings that the server will embed into `index.html`.
 
-## Server
+## <a id="server"></a>Server
 
-### package.json
+### <a id="server-package"></a>package.json
 
 I'm going to import client files in my server, and for that I need a few more packages to use with webpack:
 ```bash
@@ -173,7 +190,7 @@ Notice that `react` and `babel-core` are production dependencies, because some o
 
 I couldn't pinpoint exactly which dependencies are needed because they were too many + it's not worth it in context of a server app anyway.
 
-### src/index.js
+### <a id="server-src-index"></a>src/index.js
 
 I'm going to change how environment-specific handlers are made, so that production handlers are never imported when I develop my API server.
 
@@ -208,13 +225,13 @@ server.listen(process.env.PORT || 3000)
 ```
 Later I will use `webpack.DefinePlugin` to make webpack omit the if closure in development environment.
 
-### src/prodHandlers.js
+### <a id="server-src-prodhandlers"></a>src/prodHandlers.js
 
 Here I'm going to import `serve-static` for the static server and I'll declare `index` handler that will prerender `index.html` with my client app.
 
 In `index` handler I call `renderServerSide` function imported from client with posts I get from the db. The result app's `html` and `state` strings I put in corresponding places in the layout and respond with the result.
 
-```
+```jsx
 // src/prodHandlers.js
 import serveStatic from 'serve-static'
 import fs from 'fs'
@@ -250,11 +267,11 @@ export function index() {
 }
 ```
 
-### webpack.config.js
+### <a id="server-webpack"></a>webpack.config.js
 
 Finally I make it all work together by updating webpack to import client files as JSX and to omit production imports in development:
 
-```
+```jsx
 // webpack.config.js
 ...
 const { DefinePlugin } = require('webpack')
@@ -284,7 +301,7 @@ const config = {
 }
 ```
 
-## Verifying that it all works
+## <a id="verifying"></a>Verifying that it all works
 
 I start my client app in `client` folder:
 ```bash
@@ -312,7 +329,7 @@ docker run -it --rm -p 3000:3000 cra-ssr
 ```
 And again, http://localhost:3000 shows my posts as expected.
 
-## Caching problem
+## <a id="caching-problem"></a>Caching problem
 
 If I keep default CRA service worker running as it is, my `index.html` file generated by `react-scripts build` will be precached, and visitors will never get my server-rendered `index.html`.
 

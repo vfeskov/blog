@@ -20,9 +20,11 @@ I'm starting a series dedicated to React Server Side Rendering. In this part I'm
 
 I'm going to make separate client and server apps. The client will request posts asynchronously from the server using REST API and then render them.
 
-The project **will not** have SSR yet, but it will be based on best practices and cool patterns, so worth checking it out. Next post **with** SSR will be based on this too.
+The project **will not** have SSR yet, but it will be based on best practices and cool patterns, so worth checking it out. [Next post](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering-Enabling-SSR/) **with** SSR will be based on this too.
 
 Complete source code is available here: [Part 1: Setup](https://github.com/vfeskov/cra-ssr/tree/part-1-setup)
+
+## Index
 
 - [Root folder](#root-folder)
 - [Client](#client)
@@ -43,7 +45,7 @@ Complete source code is available here: [Part 1: Setup](https://github.com/vfesk
   - [Production mode](#verifying-prod)
 - [Bonus: Production docker image](#docker)
 
-# <a id="root-folder"></a>Root folder
+## <a id="root-folder"></a>Root folder
 
 Root folder of my project will be called `cra-ssr` and inside it there will be `client` and `server` folders.
 
