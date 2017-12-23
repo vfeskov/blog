@@ -415,7 +415,7 @@ On http://localhost:3000 I see my posts as expected.
 
 I add `Dockerfile` in the root `cra-ssr` folder:
 
-```
+```dockerfile
 FROM node:8.9.1-alpine
 
 RUN mkdir -p /usr/src/app/server
@@ -444,7 +444,7 @@ EXPOSE 3000
 ```
 
 I also create `.dockerignore` file next to `Dockerfile`:
-```
+```dockerignore
 */.env
 */build
 */node_modules

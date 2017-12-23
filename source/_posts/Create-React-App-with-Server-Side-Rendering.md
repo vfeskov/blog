@@ -323,7 +323,7 @@ npm start
 http://localhost:3000 again shows my posts as expected.
 
 Finally I build the docker image and run it:
-```
+```bash
 docker build -t cra-ssr .
 docker run -it --rm -p 3000:3000 cra-ssr
 ```
