@@ -19,8 +19,9 @@ I'm going to enable SSR in the minimal project I built in the [previous part](ht
 
 <!-- more -->
 
-- [Source code for this part](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr).
-- [Commit that adds SSR to the previous part](https://github.com/vfeskov/cra-ssr/commit/23857538863ead01c1a111b4426bb83ab558cb76).
+- [Source code for this part](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr)
+- [Commit that adds SSR to the previous part](https://github.com/vfeskov/cra-ssr/commit/b8b7549b8c02ed3c8b55c9842366025991b4bbbb)
+- [Live project this series is based on](https://github.com/vfeskov/win-a-beer)
 
 Short recap:
 
@@ -35,16 +36,16 @@ Short recap:
 
 - [Idea](#idea)
 - [Client](#client)
-  - [package.json](#client-package)
-  - [src/reducers/](#client-src-reducers)
-  - [src/App.js](#client-src-app)
-  - [src/index.js](#client-src-index)
-  - [src/renderServerSide.js](#client-src-renderserverside)
+  - [client/package.json](#client-package)
+  - [client/src/reducers/](#client-src-reducers)
+  - [client/src/App.js](#client-src-app)
+  - [client/src/index.js](#client-src-index)
+  - [client/src/renderToStrings.js](#client-src-rendertostrings)
 - [Server](#server)
-  - [package.json](#server-package)
-  - [src/index.js](#server-src-index)
-  - [src/prodHandlers.js](#server-src-prodhandlers)
-  - [webpack.config.js](#server-webpack)
+  - [server/package.json](#server-package)
+  - [server/src/index.js](#server-src-index)
+  - [server/src/prerenderClient.js](#server-src-prerenderClient)
+  - [server/webpack.config.js](#server-webpack)
 - [Verifying that it all works](#verifying)
 - [Caching problem](#caching-problem)
 
@@ -56,11 +57,9 @@ I will create a Redux store on the server side and dispatch this action to it, t
 
 I will also need to not fetch posts on the client if they were put in store on the server, I will do it with an extra reducer.
 
-My server will import client files, to smoothen development I will use [webpack define plugin](https://webpack.js.org/plugins/define-plugin/) to import them only in production.
-
 ## <a id="client"></a>Client
 
-### <a id="client-package"></a>package.json
+### <a id="client-package"></a>client/package.json
 
 First I'm going to modify build script to not only move `build` folder to `server`, but also rename `index.html` to `layout.html`, because we will render `index.html` dynamically:
 ```json
@@ -71,12 +70,12 @@ First I'm going to modify build script to not only move `build` folder to `serve
 }
 ```
 
-### <a id="client-src-reducers"></a>src/reducers/
+### <a id="client-src-reducers"></a>client/src/reducers/
 
 Next I'm going to add a reducer `inited`, which will produce boolean value: `false` by default and `true` when any kind of response is received for initial posts fetching.
 
 ```jsx
-// src/reducers/inited.js
+// client/src/reducers/inited.js
 import { RECEIVE_POSTS, ERROR_POSTS } from '../actions'
 
 export function inited (state = false, action) {
@@ -91,7 +90,7 @@ export function inited (state = false, action) {
 ```
 
 ```jsx
-// src/reducers/index.js
+// client/src/reducers/index.js
 ...
 import { inited } from './inited'
 
@@ -102,12 +101,12 @@ export const root = combineReducers({
 ```
 When I dispatch posts server side, `inited` value in store will become `true` and the client will know not to fetch posts again.
 
-### <a id="client-src-app"></a>src/App.js
+### <a id="client-src-app"></a>client/src/App.js
 
 Now I'm going to make my App check for `inited` flag before fetching posts:
 
 ```jsx
-// src/App.js
+// client/src/App.js
 ...
 export class AppComponent extends Component {
   componentDidMount () {
@@ -127,14 +126,14 @@ export const App = connect(
 ```
 `componentDidMount` hook never gets called on server side (by `renderToString`) making it perfect for such functionality.
 
-### <a id="client-src-index"></a>src/index.js
+### <a id="client-src-index"></a>client/src/index.js
 
 Next I'll read initial state of Redux store from a global variable, which the server will add to `index.html`.
 
 I will also unregister service worker to let visitors receive latest posts as soon as they get added to the DB - just like it worked before SSR. More on this [here](#caching-problem).
 
 ```jsx
-// src/index.js
+// client/src/index.js
 ...
 import { unregister } from './registerServiceWorker'
 ...
@@ -145,12 +144,12 @@ const store = createStore(root, initState, applyMiddleware(thunkMiddleware))
 unregister()
 ```
 
-### <a id="client-src-renderserverside"></a>src/renderServerSide.js
+### <a id="client-src-rendertostrings"></a>client/src/renderToStrings.js
 
-Finally, I'm going to add `renderServerSide` function that will never be called by the client, but it will be imported by the server. The file will import Redux and other libs from the client, so it makes sense to put it here:
+Finally, I'm going to add `renderToStrings` function that will never be called by the client, but it will be imported by the server. The file will import Redux and other libs from the client, so it makes sense to put it in `client`:
 
 ```jsx
-// src/renderServerSide.js
+// client/src/renderToStrings.js
 import React from 'react'
 import { createStore } from 'redux'
 import { root } from './reducers'
@@ -159,7 +158,7 @@ import { Provider } from 'react-redux'
 import { renderToString } from 'react-dom/server'
 import { App } from './App'
 
-export function renderServerSide (posts) {
+export function renderToStrings (posts) {
   const store = createStore(root)
   store.dispatch(
     posts ? receivePosts(posts) : errorPosts()
@@ -175,11 +174,11 @@ export function renderServerSide (posts) {
   return { html, state }
 }
 ```
-`renderServerSide` accepts posts that the server will provide, and it will return `html` and `state` strings that the server will embed into `index.html`.
+`renderToStrings` accepts posts that the server will provide, and it will return `html` and `state` strings that the server will embed into `index.html`.
 
 ## <a id="server"></a>Server
 
-### <a id="server-package"></a>package.json
+### <a id="server-package"></a>server/package.json
 
 I'm going to import client files in my server, and for that I need a few more packages to use with webpack:
 ```bash
@@ -190,65 +189,56 @@ Notice that `react` and `babel-core` are production dependencies, because some o
 
 I couldn't pinpoint exactly which dependencies are needed because they were too many + it's not worth it in context of a server app anyway.
 
-### <a id="server-src-index"></a>src/index.js
+### <a id="server-src-index"></a>server/src/index.js
 
-I'm going to change how environment-specific handlers are made, so that production handlers are never imported when I develop my API server.
-
-Also I'm going to add a new request handler `index`, that will catch all `GET` requests that were skipped by the static server. It will serve `index.html` with prerendered client.
+I'm going to add a new middleware `prerenderClient`, that will catch all `GET` requests that were skipped by the static server. It will serve `index.html` with prerendered client.
 
 ```jsx
-// src/index.js
+// server/src/index.js
 import http from 'http'
-import { api, error } from './handlers'
+import { api, error } from './middlewares'
 import { chain } from './util'
 
-const envSpecificHandlers = []
+const envSpecificMiddlewares = []
 
 if (process.env.NODE_ENV === 'production') {
-  const { staticFiles, index } = require('./prodHandlers')
+  const serveStatic = require('serve-static')
+  const { prerenderClient } = require('./prerenderClient')
 
-  envSpecificHandlers.push(
-    staticFiles('./public'),
-    index()
+  envSpecificMiddlewares.push(
+    serveStatic('./public'),
+    prerenderClient()
   )
 }
 
-const handlers = [
+const middlewares = [
   api,
-  ...envSpecificHandlers,
+  ...envSpecificMiddlewares,
   error
 ]
 
-const server = http.createServer(chain(handlers))
+const server = http.createServer(chain(middlewares))
 
 server.listen(process.env.PORT || 3000)
 ```
-Later I will use `webpack.DefinePlugin` to make webpack omit the if closure in development environment.
 
-### <a id="server-src-prodhandlers"></a>src/prodHandlers.js
+### <a id="server-src-prerenderclient"></a>server/src/prerenderClient.js
 
-Here I'm going to import `serve-static` for the static server and I'll declare `index` handler that will prerender `index.html` with my client app.
-
-In `index` handler I call `renderServerSide` function imported from client with posts I get from the db. The result app's `html` and `state` strings I put in corresponding places in the layout and respond with the result.
+In `prerenderClient` middleware I call `renderToStrings` function imported from client with posts I get from the db. The result app's `html` and `state` strings I put in corresponding places in the layout and respond with the result.
 
 ```jsx
-// src/prodHandlers.js
-import serveStatic from 'serve-static'
+// server/src/prerenderClient.js
 import fs from 'fs'
 import db from './db.json'
-import { renderServerSide } from '../../client/src/renderServerSide'
+import { renderToStrings } from '../../client/src/renderToStrings'
 
-export function staticFiles (dir) {
-  return serveStatic(dir)
-}
-
-export function index() {
+export function prerenderClient () {
   const layout = fs.readFileSync('./public/layout.html').toString()
 
   return (req, res, next) => {
     if (req.method !== 'GET') { return next() }
 
-    const app = renderServerSide(db)
+    const app = renderToStrings(db)
     const content = layout
       .replace(
         '<div id="root"></div>',
@@ -267,12 +257,12 @@ export function index() {
 }
 ```
 
-### <a id="server-webpack"></a>webpack.config.js
+### <a id="server-webpack"></a>server/webpack.config.js
 
-Finally I make it all work together by updating webpack to import client files as JSX and to omit production imports in development:
+Finally I make it all work together by updating webpack to import client files as JSX:
 
 ```jsx
-// webpack.config.js
+// server/webpack.config.js
 ...
 const { DefinePlugin } = require('webpack')
 

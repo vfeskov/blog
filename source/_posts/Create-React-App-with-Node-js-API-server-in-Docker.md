@@ -21,24 +21,25 @@ I'm going to make separate client and server apps. The client will request posts
 
 The project **will not** have SSR yet, but it will be based on best practices and cool patterns, so worth checking it out. [Next post](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering/) **with** SSR will be based on this too.
 
-Complete source code is available here: [Part 1: Setup](https://github.com/vfeskov/cra-ssr/tree/part-1-setup)
+- [Source code for this part](https://github.com/vfeskov/cra-ssr/tree/part-1-setup)
+- [Live project this series is based on](https://github.com/vfeskov/win-a-beer)
 
 ## Index
 
 - [Root folder](#root-folder)
 - [Client](#client)
-  - [package.json](#client-package)
-  - [src/index.js](#client-src-index)
-  - [src/reducers/](#client-src-reducers)
-  - [src/actions/](#client-src-actions)
-  - [src/App.js](#client-src-app)
+  - [client/package.json](#client-package)
+  - [client/src/index.js](#client-src-index)
+  - [client/src/reducers/](#client-src-reducers)
+  - [client/src/actions/](#client-src-actions)
+  - [client/src/App.js](#client-src-app)
 - [Server](#server)
-  - [package.json](#server-package)
-  - [webpack.config.js](#server-webpack)
-  - [src/index.js](#server-src-index)
-  - [src/handlers.js](#server-src-handlers)
-  - [src/db.json](#server-src-db)
-  - [src/util.js](#server-src-util)
+  - [server/package.json](#server-package)
+  - [server/webpack.config.js](#server-webpack)
+  - [server/src/index.js](#server-src-index)
+  - [server/src/middlewares.js](#server-src-middlewares)
+  - [server/src/db.json](#server-src-db)
+  - [server/src/util.js](#server-src-util)
 - [Verifying that it all works](#verifying)
   - [Development mode](#verifying-dev)
   - [Production mode](#verifying-prod)
@@ -65,7 +66,7 @@ I'm going to need [redux](https://redux.js.org/), its [react bindings](https://r
 ```bash
 npm install --save redux react-redux redux-thunk
 ```
-### <a id="client-package"></a>package.json
+### <a id="client-package"></a>client/package.json
 In `package.json` I need to:
 1. rename the package
 2. setup development proxy to point to my server on port `3001`
@@ -81,10 +82,10 @@ In `package.json` I need to:
   ...
 }
 ```
-### <a id="client-src-index"></a>src/index.js
+### <a id="client-src-index"></a>client/src/index.js
 First I add redux:
 ```jsx
-// src/index.js
+// client/src/index.js
 import React from 'react'
 import ReactDOM from 'react-dom'
 import './index.css'
@@ -107,11 +108,11 @@ ReactDOM.render(
 registerServiceWorker()
 ```
 
-### <a id="client-src-reducers"></a>src/reducers/
+### <a id="client-src-reducers"></a>client/src/reducers/
 
 Next I create root reducer:
 ```jsx
-// src/reducers/index.js
+// client/src/reducers/index.js
 import { combineReducers } from 'redux'
 import { posts } from './posts'
 
@@ -121,7 +122,7 @@ export const root = combineReducers({
 ```
 `posts` reducer handles state of posts that are loaded asynchronously, I create it in `src/reducers/posts.js`:
 ```jsx
-// src/reducers/posts.js
+// client/src/reducers/posts.js
 import { RECEIVE_POSTS, ERROR_POSTS } from '../actions'
 
 export function posts (state = [], action) {
@@ -136,15 +137,15 @@ export function posts (state = [], action) {
 }
 ```
 
-### <a id="client-src-actions"></a>src/actions/
+### <a id="client-src-actions"></a>client/src/actions/
 
 Next I create redux actions:
 ```jsx
-// src/actions/index.js
+// client/src/actions/index.js
 export * from './posts'
 ```
 ```jsx
-// src/actions/posts.js
+// client/src/actions/posts.js
 export const REQUEST_POSTS = 'REQUEST_POSTS'
 export const RECEIVE_POSTS = 'RECEIVE_POSTS'
 export const ERROR_POSTS = 'ERROR_POSTS'
@@ -184,7 +185,7 @@ export function fetchPosts () {
   }
 }
 ```
-### <a id="client-src-app"></a>src/App.js
+### <a id="client-src-app"></a>client/src/App.js
 
 Finally I update App.js making exported `App` a redux container and `AppComponent` a presentational component inside it:
 
@@ -230,12 +231,11 @@ mkdir server
 cd server
 ```
 
-### <a id="server-package"></a>package.json
+### <a id="server-package"></a>server/package.json
 
 My server will be compiled with webpack and it will have scripts to run in either production or development modes.
 
 To do that I create the following `package.json`:
-
 
 ```json
 {
@@ -267,14 +267,15 @@ Then I run
 npm install
 ```
 
-### <a id="server-webpack"></a>webpack.config.js
+### <a id="server-webpack"></a>server/webpack.config.js
 
-I create it next to `package.json`:
+In my webpack config I need a `.json` loader for my db and also I need to use `webpack.DefinePlugin` to make sure my production middlewares aren't imported in development:
 
 ```js
-// webpack.config.js
+// server/webpack.config.js
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
+const { DefinePlugin } = require('webpack')
 
 const config = {
   target: 'node',
@@ -289,6 +290,11 @@ const config = {
       { test: /\.json$/, loader: 'json-loader' }
     ]
   },
+  plugins: [
+    new DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+    })
+  ],
   resolve: { extensions: ['.js', '.json'] }
 }
 
@@ -297,40 +303,45 @@ config.externals = [nodeExternals()]
 module.exports = config
 ```
 
-### <a id="server-src-index"></a>src/index.js
+### <a id="server-src-index"></a>server/src/index.js
 
 In development mode the server will only serve `/api` requests and respond with error otherwise.
 
 In production it will additionally serve static files from `server/public` folder of the project:
 
 ```jsx
-// src/index.js
+// server/src/index.js
 import http from 'http'
 import serveStatic from 'serve-static'
-import { api, error } from './handlers'
+import { api, error } from './middlewares'
 import { chain } from './util'
 
-const envSpecificHandlers = process.env.NODE_ENV !== 'production' ? [] : [
-  serveStatic('public')
-]
+const envSpecificMiddlewares = []
 
-const handlers = [
+if (process.env.NODE_ENV === 'production') {
+  envSpecificMiddlewares.push(
+    serveStatic('public')
+  )
+}
+
+const middlewares = [
   api,
-  ...envSpecificHandlers,
+  ...envSpecificMiddlewares,
   error
 ]
 
-const server = http.createServer(chain(handlers))
+const server = http.createServer(chain(middlewares))
 
 server.listen(process.env.PORT || 3000)
 ```
+Because of `webpack.DefinePlugin` the `if` closure will be completely omitted in development environment.
 
-### <a id="server-src-handlers"></a>src/handlers.js
-`api` handler responds to `GET /api/posts` requests serving contents of `src/db.json` file, other requests it will pass to the next handler.
+### <a id="server-src-middlewares"></a>server/src/middlewares.js
+`api` middleware responds to `GET /api/posts` requests serving contents of `src/db.json` file, other requests it will pass to the next middleware.
 
-`error` handler simply responds with an http error.
+`error` middleware simply responds with an http error.
 ```jsx
-// src/handlers.js
+// server/src/middlewares.js
 import db from './db.json'
 import fs from 'fs'
 import finalhandler from 'finalhandler'
@@ -341,12 +352,12 @@ export function api ({ method, url }, res, next) {
   res.end(JSON.stringify(db))
 }
 
-export function error (req, res) {
-  return finalhandler(req, res)()
+export function error (req, res, next, err) {
+  return finalhandler(req, res)(err)
 }
 ```
 
-### <a id="server-src-db"></a>src/db.json
+### <a id="server-src-db"></a>server/src/db.json
 
 ```json
 [
@@ -363,20 +374,25 @@ export function error (req, res) {
 ]
 ```
 
-### <a id="server-src-util"></a>src/util.js
+### <a id="server-src-util"></a>server/src/util.js
 
-I add a utility function to chain request handlers so that each handler could pass handling to the next one if it can't serve the request:
+I add a utility function to chain middlewares so that each middleware could pass handling to the next one if it can't respond to the request.
+
+When any of the middlewares calls `next(err)` the error gets passed directly to the final middleware, skipping others:
 
 ```jsx
-// src/util.js
-export function chain (handlers) {
+// server/src/util.js
+export function chain (middlewares) {
   return (req, res) => {
-    [...handlers]
+    [...middlewares] // need to copy array because #reverse mutates it
       .reverse()
       .reduce(
-        (next, handler) => {
-          const args = [req, res].concat(next ? next : [])
-          return () => handler(...args)
+        (next, middleware) => {
+          return err => {
+            // if next was called with an err, skip all middlewares and call the final one, whose next is null
+            if (err && next) { return next(err) }
+            middleware(req, res, next, err)
+          }
         },
         null
       )()
@@ -463,4 +479,4 @@ On http://localhost:3000 I see posts as expected.
 
 ----------
 
-In the [next part](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering/) I will actually enable Service Side Rendering, [check it out](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering/)
+In the [next part](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering/) I will enable Service Side Rendering, [check it out](https://vfeskov.com/2017/12/22/Create-React-App-with-Server-Side-Rendering/).
