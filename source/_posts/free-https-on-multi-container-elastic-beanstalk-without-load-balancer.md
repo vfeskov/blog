@@ -21,7 +21,7 @@ A load balancer offers some really good [perks](https://aws.amazon.com/elasticlo
 
 But if all you need from a load balancer is an SSL certificate, you can save minimum [$18 per month](https://aws.amazon.com/elasticloadbalancing/classicloadbalancer/pricing/) by following the steps below.
 
-> You can find a working example [here](https://github.com/vfeskov/war-of-bob).
+You can find a working example [here](https://github.com/vfeskov/war-of-bob).
 
 ### Dockerize your app
 
@@ -33,7 +33,7 @@ Build and push the image to either private or public Docker repository. If you c
 
 Replace `<something something>` with actual values in the following code snippet, save it as `Dockerrun.aws.json` and compress it.
 
-> If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
+If the docker image of your app is published in a private repo, make sure to include [authentication config](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/create_deploy_docker_v2config.html#docker-multicontainer-dockerrun-privaterepo) to the file.
 
 ``` json
 {
@@ -128,21 +128,21 @@ Replace `<something something>` with actual values in the following code snippet
     },
     {
       "name": "app",
-      "image": "<<<<<<<<<YOUR PUBLISHED DOCKER IMAGE>>>>>>>>>",
+      "image": "<YOUR PUBLISHED DOCKER IMAGE>",
       "essential": true,
       "memoryReservation": 256,
       "environment": [
         {
           "name": "VIRTUAL_HOST",
-          "value": "<<<<<<<<<YOUR APP'S HOST>>>>>>>>>"
+          "value": "<YOUR APP'S HOST>"
         },
         {
           "name": "LETSENCRYPT_HOST",
-          "value": "<<<<<<<<<YOUR APP'S HOST>>>>>>>>>"
+          "value": "<YOUR APP'S HOST>"
         },
         {
           "name": "LETSENCRYPT_EMAIL",
-          "value": "<<<<<<<<<YOUR EMAIL HERE>>>>>>>>>"
+          "value": "<YOUR EMAIL HERE>"
         }
       ]
     }
@@ -163,8 +163,8 @@ Create an Elastic Beanstalk application, all it will ask is a name. Next create 
 6. Under `Software settings` click `Modify`. Add all the environment variables your app needs under `Environment properties`.
 7. Click `Create environment`.
 8. Environment will stabilise in about 10 minutes.
-> NOTE: The first time this container is launched it generates a new Diffie-Hellman group file. This process can take several minutes to complete (be patient).
-> - [README docker-letsencrypt-nginx-proxy-companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion)
+
+[From docker-letsencrypt-nginx-proxy-companion README](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion): NOTE: The first time this container is launched it generates a new Diffie-Hellman group file. This process can take several minutes to complete (be patient)
 
 ### Allow HTTPS port on EC2 Instance
 
