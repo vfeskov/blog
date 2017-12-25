@@ -1,5 +1,5 @@
 ---
-title: 'Create React App with Server Side Rendering'
+title: 'Create React App with Server Side Rendering in Docker'
 date: 2017-12-22 20:01:44
 tags:
   - CRA
@@ -15,7 +15,7 @@ tags:
   - CRA with SSR series
 ---
 
-I'm going to enable SSR in the minimal project I built in the [previous part](https://vfeskov.com/2017/12/21/Create-React-App-with-Node-js-API-server-in-Docker/) of the [series](https://vfeskov.com/tags/CRA-with-SSR-series/) dedicated to React Server Side Rendering.
+I'm going to enable SSR in the minimal Docker-based project I built in the [previous part](https://vfeskov.com/2017/12/21/Create-React-App-with-Node-js-API-server-in-Docker/) of the [series](https://vfeskov.com/tags/CRA-with-SSR-series/) dedicated to React Server Side Rendering.
 
 <!-- more -->
 

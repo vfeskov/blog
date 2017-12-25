@@ -7,7 +7,6 @@ tags:
   - Redux
   - Node.js
   - Webpack
-  - Babel
   - JS
   - Docker
   - CRA with SSR series
