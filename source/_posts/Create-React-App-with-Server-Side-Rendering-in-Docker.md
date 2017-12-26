@@ -20,7 +20,7 @@ I'm going to enable SSR in the minimal Docker-based project I built in the [prev
 <!-- more -->
 
 - [Source code for this part](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr)
-- [Commit that adds SSR to the previous part](https://github.com/vfeskov/cra-ssr/commit/b8b7549b8c02ed3c8b55c9842366025991b4bbbb)
+- [Commit that adds SSR to the previous part](https://github.com/vfeskov/cra-ssr/commit/565abd80d7c1bb5e111dc4b4c18ebfd115dd574c)
 - [Live project this series is based on](https://github.com/vfeskov/win-a-beer)
 
 Short recap:
