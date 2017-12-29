@@ -10,7 +10,7 @@ tags:
   - CRA with SSR series
 ---
 
-CRA service worker caches everything and will only update the cache when you deploy another version. This breaks SSR and in this post I'm going to fix it.
+CRA service worker caches `index.html` and serves the cache instead of requesting it from the server. It breaks server side rendering and in this post I'm going to fix it.
 
 <!-- more -->
 
