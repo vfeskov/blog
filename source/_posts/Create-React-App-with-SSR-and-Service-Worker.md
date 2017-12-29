@@ -64,7 +64,7 @@ I'm going to override the `service-worker.js` file that `react-scripts build` ge
 
 My service worker will cache all the static files the original one would, but `index.html` it will serve network-first: if there's internet, it will fetch the file from the server, otherwise it will serve cache.
 
-## Client <a id="client">#<a/>
+## Client <a id="client" href="#client">#<a/>
 
 My [project](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr) consists of `client/` and `server/` folders, `client/` holds app scaffolded with create-react-app.
 
@@ -80,9 +80,9 @@ My [project](https://github.com/vfeskov/cra-ssr/tree/part-2-enabling-ssr) consis
 }
 ```
 
-### client/package.json <a id="client-package">#</a>
+### client/package.json <a id="client-package" href="#client-package">#</a>
 
-I'm going to install `workbox-cli` and `workbox-sw`, I'm going to use them to generate replacement service worker:
+I'm going to install `workbox-cli` and `workbox-sw` to generate replacement service worker:
 
 ```bash
 npm install --save workbox-cli@2.1.2 && workbox-sw@2.1.2
@@ -125,7 +125,7 @@ module.exports = {
   ]
 };
 ```
-It will make the result service worker to pre-cache all files in `build/` folder except `asset-manifest.json` and `index.html`. Only difference from default CRA service worker is `index.html`.
+It will make the result service worker pre-cache all files in `build/` folder except `asset-manifest.json` and `index.html`. Only difference from default CRA service worker is `index.html`.
 
 The config also states to use `./src/service-worker.js` as the template.
 
@@ -223,7 +223,7 @@ function indexRequest() {
 
 ## Verifying that it works <a id="verifying" href="#verifying">#</a>
 
-I [modified](https://github.com/vfeskov/cra-ssr/commit/12779367750312ea8b36410c0882f3d548dfdcd7) the server to load posts database from file each time it's requested, instead of just once during build.
+I [modified](https://github.com/vfeskov/cra-ssr/commit/12779367750312ea8b36410c0882f3d548dfdcd7) the server to simulate real database stored in `server/db.json`.
 
 I go to `client/` folder and do:
 ```bash
@@ -250,7 +250,7 @@ I refresh http://localhost:3000 and see the new post as expected.
 
 Next I open DevTools Network tab, tick Offline checkbox and refresh http://localhost:3000. I see the three posts as expected.
 
-## What about routing? <a id="routing" href="routing">#</a>
+## What about routing? <a id="routing" href="#routing">#</a>
 
 If I had a router on client and made server pre-render client routes too, my service worker would only work for the index route.
 
