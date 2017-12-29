@@ -17,7 +17,7 @@ CRA service worker caches `index.html` and serves the cache instead of requestin
 This post is the third one in the [series](https://vfeskov.com/tags/CRA-with-SSR-series/) dedicated to React Server Side Rendering.
 
 - [Source code for the post](https://github.com/vfeskov/cra-ssr/tree/part-3-service-worker)
-- [Commit that fixes service worker](https://github.com/vfeskov/cra-ssr/commit/d2f147377b1e9f8e01516a186907cc88ef916bb6)
+- [Commit that fixes service worker](https://github.com/vfeskov/cra-ssr/commit/d269f55e9f9c83cb6a67033499c51f5a778bdb4a)
 - [Live project this series is based on](https://github.com/vfeskov/win-a-beer)
 
 ## Index
