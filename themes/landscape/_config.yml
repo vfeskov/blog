@@ -12,6 +12,9 @@ menu:
   Platformer:
     target: _blank
     href: https://plat.vfeskov.com
+  Back To Top:
+    target: _blank
+    href: https://www.npmjs.com/package/vanilla-back-to-top
 rss: /atom.xml
 
 # Content
