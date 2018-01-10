@@ -311,13 +311,14 @@ In production it will additionally serve static files from `server/public` folde
 ```jsx
 // server/src/index.js
 import http from 'http'
-import serveStatic from 'serve-static'
 import { api, error } from './middlewares'
 import { chain } from './util'
 
 const envSpecificMiddlewares = []
 
 if (process.env.NODE_ENV === 'production') {
+  const serveStatic = require('serve-static')
+
   envSpecificMiddlewares.push(
     serveStatic('public')
   )
