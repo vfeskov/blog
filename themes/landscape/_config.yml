@@ -5,7 +5,7 @@ menu:
     href: /
   Win A Beer:
     target: _blank
-    href: https://beer.vfeskov.com
+    href: https://winabeer.com
   War Of Bob:
     target: _blank
     href: https://bob.vfeskov.com
@@ -15,6 +15,9 @@ menu:
   Back To Top:
     target: _blank
     href: https://www.npmjs.com/package/vanilla-back-to-top
+  Link Too Big:
+    target: _blank
+    href: https://libi.me
 rss: /atom.xml
 
 # Content
